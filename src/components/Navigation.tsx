@@ -121,13 +121,14 @@ const Navigation = () => {
         }
       }
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    // Bind via globalThis cast to avoid ambient type narrowing issues in strict TS setups
+    (globalThis as Window).addEventListener("scroll", onScroll);
     onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => (globalThis as Window).removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <nav className="w-full h-16 sm:h-20 md:h-24 flex items-center justify-between px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-24 relative z-50 max-w-screen-2xl mx-auto">
+    <nav className="w-full h-16 sm:h-20 md:h-24 flex items-center justify-between px-4 sm:px-6 lg:px-12 xl:px-16 2xl:px-24 relative z-50 max-w-screen-2xl mx-auto overflow-x-hidden">
       {/* Logo */}
       <div className="flex items-center space-x-2 min-w-0 flex-shrink-0">
         <div
@@ -140,7 +141,7 @@ const Navigation = () => {
       </div>
 
       {/* Center Navigation */}
-      <div className="hidden lg:flex items-center justify-center flex-1 max-w-3xl mx-4 lg:mx-8">
+      <div className="hidden md:flex items-center justify-center flex-1 max-w-3xl mx-4 lg:mx-8">
         <div className="flex items-center bg-hero-badge/30 border border-hero-badge-border backdrop-blur-hero rounded-full p-1 w-full max-w-lg">
           {navItems.map((item) => {
             const isActive = activeHash === item.href;
@@ -419,7 +420,7 @@ const Navigation = () => {
       </div>
 
       {/* Mobile Menu + Get Started Button */}
-      <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 lg:hidden">
+      <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 md:hidden">
         {/* Mobile menu trigger */}
         <div>
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
@@ -431,22 +432,32 @@ const Navigation = () => {
                 aria-controls="mobile-menu"
                 aria-haspopup="menu"
                 onClick={() => setMenuOpen(true)}
-                className="inline-flex items-center justify-center rounded-md p-2 text-hero-primary hover:bg-hero-badge/30 border border-hero-badge-border transition-colors touch-manipulation"
+                className="inline-flex items-center justify-center rounded-md h-12 w-12 text-hero-primary hover:bg-hero-badge/30 border border-hero-badge-border transition-colors touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hero-primary focus-visible:ring-offset-2"
               >
-                <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
+                <Menu className="h-6 w-6" />
               </button>
             </SheetTrigger>
-            <SheetContent id="mobile-menu" side="right" className="bg-background border-border mobile-menu-content w-[92vw] sm:w-[420px] max-h-[92vh] rounded-bl-[12px] origin-top-right" accessibleTitle="Mobile Menu">
-              <div className="px-4 sm:px-6 py-4 overflow-y-auto">
+            <SheetContent
+              id="mobile-menu"
+              side="right"
+              className="bg-background border-border mobile-menu-content w-[92vw] sm:w-[420px] max-h-[92vh] rounded-bl-[12px] origin-top-right"
+              accessibleTitle="Mobile Menu"
+              style={{
+                paddingLeft: 'env(safe-area-inset-left)',
+                paddingRight: 'env(safe-area-inset-right)',
+                paddingBottom: 'env(safe-area-inset-bottom)'
+              }}
+            >
+              <div className="px-4 sm:px-6 py-4 overflow-y-auto overflow-x-hidden">
                 <div className="flex items-center justify-between mb-6">
                   <span className="text-lg font-semibold text-hero-primary">Menu</span>
                   <SheetClose asChild>
-                    <button className="rounded-md p-2 text-hero-secondary hover:bg-accent/30 transition-colors touch-manipulation">
+                    <button aria-label="Close menu" className="inline-flex items-center justify-center rounded-md min-h-12 px-4 text-hero-secondary hover:bg-accent/30 transition-colors touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hero-primary focus-visible:ring-offset-2">
                       Close
                     </button>
-                 </SheetClose>
+                  </SheetClose>
                </div>
-               <div className="flex flex-col gap-1 mobile-menu-list" role="menu" aria-label="Primary">
+               <div className="flex flex-col gap-2 mobile-menu-list" role="menu" aria-label="Primary">
                  {navItems.map((item, index) => {
                    const isActive = activeHash === item.href;
                    return (
@@ -457,7 +468,7 @@ const Navigation = () => {
                           onClick={(e) => handleNavClick(e, item.href)}
                           aria-label={`Navigate to ${item.label} section`}
                           aria-current={isActive ? "page" : undefined}
-                          className={`px-4 py-3 text-base font-medium rounded-lg transition-all touch-manipulation animate-fade-in motion-reduce:animate-none ${
+                          className={`w-full min-h-12 flex items-center px-3 sm:px-4 py-3 text-sm sm:text-base font-medium rounded-lg transition-all touch-manipulation animate-fade-in motion-reduce:animate-none ${
                             isActive
                               ? "text-hero-primary bg-hero-badge/20"
                               : "text-hero-secondary hover:text-hero-primary hover:bg-hero-badge/20"

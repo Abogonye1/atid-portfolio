@@ -117,9 +117,9 @@ const Navigation = () => {
         }
       }
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    (globalThis as Window).addEventListener("scroll", onScroll);
     onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => (globalThis as Window).removeEventListener("scroll", onScroll);
   }, []);
 
   return (

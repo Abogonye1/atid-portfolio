@@ -1,3 +1,4 @@
+/* stylelint-disable at-rule-no-unknown -- Tailwind CSS at-rules and @apply are valid in PostCSS/Tailwind pipeline */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -105,6 +106,7 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
   }
 
   /* Hide scrollbar */
@@ -119,6 +121,42 @@ All colors MUST be HSL.
   scroll-behavior: smooth;
   @media (prefers-reduced-motion: reduce) {
     scroll-behavior: auto;
+  }
+
+  /* Ensure media scales within containers on small screens */
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
+  picture, svg {
+    max-width: 100%;
+  }
+}
+
+/* stylelint-enable at-rule-no-unknown */
+
+/* Global responsive adjustments and overflow safeguards */
+@layer base {
+  html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* Scale typography proportionally across breakpoints */
+  html { font-size: 16px; }
+  @media (max-width: 1024px) {
+    html { font-size: 15.5px; }
+  }
+  @media (max-width: 768px) {
+    html { font-size: 15px; }
+  }
+  @media (max-width: 480px) {
+    html { font-size: 14px; }
+  }
+
+  /* Ensure interactive elements remain comfortably tappable */
+  button, .button, .btn {
+    min-height: 44px;
   }
 }
 

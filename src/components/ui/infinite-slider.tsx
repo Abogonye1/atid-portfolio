@@ -32,6 +32,37 @@ export function InfiniteSlider({
   const translation = useMotionValue(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [key, setKey] = useState(0);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  // Respect OS-level reduced motion preference
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReducedMotion(mq.matches);
+    update();
+    // Prefer modern addEventListener; fallback to legacy addListener where necessary
+    if (typeof mq.addEventListener === 'function') {
+      mq.addEventListener('change', update);
+    } else if ('addListener' in mq) {
+      // Legacy MediaQueryList API (deprecated)
+      const legacyMq = mq as MediaQueryList & {
+        addListener: (listener: (ev: MediaQueryListEvent) => void) => void;
+        removeListener: (listener: (ev: MediaQueryListEvent) => void) => void;
+      };
+      legacyMq.addListener(update);
+    }
+    return () => {
+      if (typeof mq.removeEventListener === 'function') {
+        mq.removeEventListener('change', update);
+      } else if ('removeListener' in mq) {
+        const legacyMq = mq as MediaQueryList & {
+          addListener: (listener: (ev: MediaQueryListEvent) => void) => void;
+          removeListener: (listener: (ev: MediaQueryListEvent) => void) => void;
+        };
+        legacyMq.removeListener(update);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     let controls;
@@ -39,6 +70,12 @@ export function InfiniteSlider({
     const contentSize = size + gap;
     const from = reverse ? -contentSize / 2 : 0;
     const to = reverse ? 0 : -contentSize / 2;
+
+    // If reduced motion is enabled, stop animating and keep static layout
+    if (reducedMotion) {
+      translation.set(0);
+      return;
+    }
 
     if (isTransitioning) {
       controls = animate(translation, [translation.get(), to], {
@@ -74,9 +111,10 @@ export function InfiniteSlider({
     isTransitioning,
     direction,
     reverse,
+    reducedMotion,
   ]);
 
-  const hoverProps = (speedOnHover || durationOnHover)
+  const hoverProps = (!reducedMotion && (speedOnHover || durationOnHover))
     ? {
         onHoverStart: () => {
           setIsTransitioning(true);
@@ -94,9 +132,9 @@ export function InfiniteSlider({
       <motion.div
         className='flex w-max'
         style={{
-          ...(direction === 'horizontal'
-            ? { x: translation }
-            : { y: translation }),
+          ...(reducedMotion
+            ? (direction === 'horizontal' ? { x: 0 } : { y: 0 })
+            : (direction === 'horizontal' ? { x: translation } : { y: translation })),
           gap: `${gap}px`,
           flexDirection: direction === 'horizontal' ? 'row' : 'column',
         }}

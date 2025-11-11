@@ -31,12 +31,41 @@ export const SparklesCore = (props: ParticlesProps) => {
     particleDensity,
   } = props;
   const [init, setInit] = useState(false);
+  const [coarsePointer, setCoarsePointer] = useState(false);
   useEffect(() => {
     initParticlesEngine(async (engine) => {
       await loadSlim(engine);
     }).then(() => {
       setInit(true);
     });
+  }, []);
+
+  // Detect coarse pointer (touch) devices to reduce interactions
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(pointer: coarse)");
+    const handler = (e: MediaQueryListEvent) => setCoarsePointer(e.matches);
+    setCoarsePointer(mq.matches);
+    if (typeof mq.addEventListener === "function") {
+      mq.addEventListener("change", handler);
+    } else if ("addListener" in mq) {
+      const legacyMq = mq as MediaQueryList & {
+        addListener: (listener: (ev: MediaQueryListEvent) => void) => void;
+        removeListener: (listener: (ev: MediaQueryListEvent) => void) => void;
+      };
+      legacyMq.addListener(handler);
+    }
+    return () => {
+      if (typeof mq.removeEventListener === "function") {
+        mq.removeEventListener("change", handler);
+      } else if ("removeListener" in mq) {
+        const legacyMq = mq as MediaQueryList & {
+          addListener: (listener: (ev: MediaQueryListEvent) => void) => void;
+          removeListener: (listener: (ev: MediaQueryListEvent) => void) => void;
+        };
+        legacyMq.removeListener(handler);
+      }
+    };
   }, []);
   const controls = useAnimation();
 
@@ -70,19 +99,19 @@ export const SparklesCore = (props: ParticlesProps) => {
               zIndex: 1,
             },
 
-            fpsLimit: 120,
-            interactivity: {
-              events: {
-                onClick: {
-                  enable: true,
+            fpsLimit: 60,
+          interactivity: {
+            events: {
+              onClick: {
+                  enable: !coarsePointer,
                   mode: "push",
-                },
+              },
                 onHover: {
                   enable: false,
                   mode: "repulse",
                 },
-                // Resize should be a boolean; avoid explicit-any casts
-                resize: true,
+                // Resize configuration: use object form to satisfy typings
+                resize: { enable: true },
               },
               modes: {
                 push: {
