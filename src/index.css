@@ -193,3 +193,45 @@ All colors MUST be HSL.
     caret-color: #000;
   }
 }
+
+/* Scoped responsive rules for FeaturesSections imagery */
+@layer components {
+  .features-image-container {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .features-picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .features-picture img.features-image {
+    width: 100%;
+    height: auto; /* Fallback when object-fit is unsupported */
+    object-fit: contain;
+  }
+
+  /* Breakpoints: adjust behavior per mobile sizes while keeping desktop intact */
+  @media (max-width: 1024px) {
+    .features-image-container {
+      aspect-ratio: auto; /* Override fixed ratio to allow natural scaling */
+    }
+  }
+
+  @media (max-width: 768px) {
+    .features-image-container {
+      aspect-ratio: auto;
+    }
+    .features-picture img.features-image {
+      object-fit: contain; /* Ensure no cropping on mobile */
+    }
+  }
+
+  @media (max-width: 480px) {
+    .features-image-container {
+      aspect-ratio: auto; /* Avoid overly tall crops on very small screens */
+    }
+  }
+}

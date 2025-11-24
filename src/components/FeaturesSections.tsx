@@ -32,8 +32,8 @@ export function FeaturesSections() {
                             </ul>
                         </div>
                         <div className="border-border/50 relative rounded-3xl border p-3 lg:col-span-3">
-                            <div className="bg-gradient-to-b aspect-[76/59] relative overflow-hidden rounded-2xl from-muted/30 to-transparent p-px">
-                                <picture className="block h-full w-full">
+                            <div className="features-image-container bg-gradient-to-b aspect-[76/59] relative overflow-hidden rounded-2xl from-muted/30 to-transparent p-px">
+                                <picture className="features-picture block h-full w-full">
                                   <source
                                     type="image/avif"
                                     srcSet="/lovable-uploads/53d1c4c1-71e0-46e0-b04f-3c93d652bd98-480w.avif 480w, /lovable-uploads/53d1c4c1-71e0-46e0-b04f-3c93d652bd98-768w.avif 768w, /lovable-uploads/53d1c4c1-71e0-46e0-b04f-3c93d652bd98-1024w.avif 1024w, /lovable-uploads/53d1c4c1-71e0-46e0-b04f-3c93d652bd98-1200w.avif 1200w, /lovable-uploads/53d1c4c1-71e0-46e0-b04f-3c93d652bd98-1600w.avif 1600w"
@@ -46,7 +46,7 @@ export function FeaturesSections() {
                                   />
                                   <img
                                     src="/lovable-uploads/53d1c4c1-71e0-46e0-b04f-3c93d652bd98.png"
-                                    className="rounded-[15px] absolute inset-0 w-full h-full object-contain md:object-cover object-center"
+                                    className="features-image rounded-[15px] absolute inset-0 w-full h-full object-contain md:object-cover object-center"
                                     alt="AI dashboard interface"
                                     width={1200}
                                     height={920}
@@ -66,8 +66,8 @@ export function FeaturesSections() {
                 <div className="mx-auto max-w-xl md:max-w-6xl px-6">
                     <div className="grid items-center gap-12 md:grid-cols-2 md:gap-12 lg:grid-cols-5 lg:gap-24">
                         <div className="border-border/50 relative rounded-3xl border p-3 lg:col-span-3 order-2 lg:order-1">
-                            <div className="bg-gradient-to-b aspect-[76/59] relative overflow-hidden rounded-2xl from-muted/30 to-transparent p-px">
-                                <picture className="block h-full w-full">
+                            <div className="features-image-container bg-gradient-to-b aspect-[76/59] relative overflow-hidden rounded-2xl from-muted/30 to-transparent p-px">
+                                <picture className="features-picture block h-full w-full">
                                   <source
                                     type="image/avif"
                                     srcSet="/lovable-uploads/acf7a0f9-4092-4745-9a53-b92eb98e887d-480w.avif 480w, /lovable-uploads/acf7a0f9-4092-4745-9a53-b92eb98e887d-768w.avif 768w, /lovable-uploads/acf7a0f9-4092-4745-9a53-b92eb98e887d-1024w.avif 1024w, /lovable-uploads/acf7a0f9-4092-4745-9a53-b92eb98e887d-1200w.avif 1200w, /lovable-uploads/acf7a0f9-4092-4745-9a53-b92eb98e887d-1600w.avif 1600w"
@@ -80,7 +80,7 @@ export function FeaturesSections() {
                                   />
                                   <img 
                                     src="/lovable-uploads/acf7a0f9-4092-4745-9a53-b92eb98e887d.png" 
-                                    className="rounded-[15px] absolute inset-0 w-full h-full object-contain md:object-cover object-center" 
+                                    className="features-image rounded-[15px] absolute inset-0 w-full h-full object-contain md:object-cover object-center" 
                                     alt="AI workflow automation" 
                                     width={1200} 
                                     height={920} 
