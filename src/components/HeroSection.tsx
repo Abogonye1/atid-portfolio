@@ -3,16 +3,33 @@ import { SparklesCore } from "@/components/ui/sparkles";
 import { motion } from "framer-motion";
 import AnimatedTextCycle from "@/components/AnimatedTextCycle";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { assetUrl } from "@/lib/utils";
 
 const HeroSection = () => {
+  const [sparkDensity, setSparkDensity] = useState(100);
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      setSparkDensity(w < 640 ? 40 : w < 1024 ? 80 : 120);
+    };
+    update();
+    window.addEventListener("resize", update, { passive: true });
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
   return (
-    <section id="home" className="relative h-[700px] flex flex-col items-center justify-center px-6 lg:px-12 text-center overflow-hidden">
+    <section id="home" className="relative min-h-[70vh] sm:min-h-[75vh] lg:min-h-[80vh] flex flex-col items-center justify-center px-6 lg:px-12 text-center overflow-hidden">
       {/* Top-left hero logo overlay: white on black, responsive, non-interactive */}
       <div className="absolute top-0 left-0 z-20 pointer-events-none m-0 p-0 leading-none bg-black flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9">
         <img
-          src="/lovable-uploads/Striking Minimalist Wordmark Logo for Atid.jpg"
+          src={assetUrl('/lovable-uploads/Striking Minimalist Wordmark Logo for Atid.jpg')}
           alt="Atid Logo"
           className="block w-full h-full object-contain"
+          loading="eager"
+          decoding="async"
+          width={36}
+          height={36}
           style={{ filter: 'brightness(0) invert(1)' }}
         />
       </div>
@@ -21,12 +38,12 @@ const HeroSection = () => {
         <SparklesCore
           id="hero-sparkles"
           background="transparent"
-          minSize={0.8}
-          maxSize={2.5}
-          particleDensity={200}
+          minSize={0.6}
+          maxSize={2}
+          particleDensity={sparkDensity}
           className="w-full h-full"
           particleColor="#ffffff"
-          speed={1.2}
+          speed={0.9}
         />
       </div>
 
@@ -45,7 +62,7 @@ const HeroSection = () => {
 
         {/* Main Title with enhanced animation */}
         <motion.h1 
-          className="text-4xl md:text-5xl lg:text-6xl font-medium text-hero-primary mb-6 leading-[1.4]"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-hero-primary mb-6 leading-tight"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
@@ -69,7 +86,7 @@ const HeroSection = () => {
 
         {/* Subtitle */}
         <motion.p 
-          className="text-lg md:text-xl text-hero-secondary mb-8 max-w-2xl mx-auto leading-relaxed"
+          className="text-base sm:text-lg md:text-xl text-hero-secondary mb-8 max-w-2xl mx-auto leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
@@ -94,7 +111,7 @@ const HeroSection = () => {
               variant="hero-outline"
               size="lg"
               aria-label="Get Started"
-              className="hero-cta relative overflow-hidden rounded-full px-8 py-6 text-lg md:text-lg text-white border border-white/20 bg-white/20 backdrop-blur-hero shadow-[0_8px_30px_-12px_rgba(0,0,0,0.5)] hover:bg-white/25 hover:shadow-[0_12px_36px_-12px_rgba(0,0,0,0.55)] transition-[background-color,box-shadow,transform] duration-300 ease-out touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-0"
+              className="hero-cta relative overflow-hidden rounded-full px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg text-white border border-white/20 bg-white/20 backdrop-blur-hero shadow-[0_8px_30px_-12px_rgba(0,0,0,0.5)] hover:bg-white/25 hover:shadow-[0_12px_36px_-12px_rgba(0,0,0,0.55)] transition-[background-color,box-shadow,transform] duration-300 ease-out touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-0"
             >
               <Link to="/contact" aria-label="Go to Contact Us">
               {/* Floating points (navbar-style) */}

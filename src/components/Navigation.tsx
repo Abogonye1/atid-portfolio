@@ -4,6 +4,7 @@ import { Sheet, SheetTrigger, SheetContent, SheetClose } from "@/components/ui/s
 import { scrollToId } from "@/lib/smoothScroll";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 // Logo switched to div background from lovable-uploads to preserve aspect ratio
+import { assetUrl } from "@/lib/utils";
 
 const Navigation = () => {
   const [activeHash, setActiveHash] = useState<string>("#home");
@@ -133,7 +134,7 @@ const Navigation = () => {
       <div className="flex items-center space-x-2 min-w-0 flex-shrink-0">
         <div
           className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 bg-center bg-no-repeat bg-contain flex-shrink-0"
-          style={{ backgroundImage: 'url("/lovable-uploads/Striking Minimalist Wordmark Logo for Atid.jpg")' }}
+          style={{ backgroundImage: `url(${assetUrl('/lovable-uploads/Striking Minimalist Wordmark Logo for Atid.jpg')})` }}
           role="img"
           aria-label="Atid Logo"
         />

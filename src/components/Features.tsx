@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
+import { cn, assetUrl } from '@/lib/utils'
 import { Calendar, LucideIcon, MapPin } from 'lucide-react'
 import { ReactNode } from 'react'
 import { motion } from 'framer-motion'
@@ -187,14 +187,14 @@ interface DualModeImageProps {
 const DualModeImage = ({ darkSrc, lightSrc, alt, width, height, className }: DualModeImageProps) => (
     <div className="contents">
         <img
-            src={darkSrc}
+            src={assetUrl(darkSrc)}
             className={cn('hidden dark:block', className)}
             alt={`${alt} dark`}
             width={width}
             height={height}
         />
         <img
-            src={lightSrc}
+            src={assetUrl(lightSrc)}
             className={cn('shadow dark:hidden', className)}
             alt={`${alt} light`}
             width={width}

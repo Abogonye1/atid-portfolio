@@ -1,5 +1,6 @@
-import { cn } from "@/lib/utils";
+import { cn, assetUrl } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
+import manifest from "@/data/imageManifest.json";
 
 interface Testimonial {
   id: string;
@@ -89,7 +90,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
           }
         });
       },
-      { rootMargin: "200px" }
+      { rootMargin: "120px" }
     );
     observer.observe(node);
     return () => observer.disconnect();
@@ -146,8 +147,8 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
 
   return (
     <div className={cn(
-      "flex flex-col shrink-0 w-[280px] sm:w-[320px] lg:w-[380px]",
-      "mr-4 lg:mr-6"
+      "flex flex-col shrink-0 w-full sm:w-[320px] lg:w-[380px]",
+      "mr-2 sm:mr-4 lg:mr-6"
     )}>
       <div
         ref={containerRef}
@@ -161,17 +162,54 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
         role={hasVideo ? "button" : undefined}
         aria-label={testimonial.ariaLabel || `${testimonial.company} showcase video`}
       >
-          {/* Poster image layer */}
-          <img
-            src={testimonial.poster || testimonial.image}
-            alt={testimonial.company || "Company showcase"}
-            className={cn(
-              "absolute inset-0 w-full h-full object-cover",
-              hasVideo ? (showVideo ? "opacity-0" : "opacity-100") : "opacity-100",
-              "transition-opacity duration-300"
-            )}
-            loading="lazy"
-          />
+          {/* Poster image layer with responsive sources when available */}
+          {(() => {
+            const posterPath = assetUrl(testimonial.poster || testimonial.image);
+            const basename = posterPath
+              .replace(/^\/+/, "")
+              .replace(/^lovable-uploads\//, "")
+              .replace(/^public\/lovable-uploads\//, "")
+              .replace(/\.(png|jpg|jpeg)$/i, "");
+            const widths: number[] | undefined = (manifest as Record<string, number[]>)[basename];
+
+            const sizes = "(max-width: 640px) 90vw, (max-width: 1024px) 320px, 380px";
+
+            if (widths && widths.length) {
+              const avifSrcSet = widths.map((w) => `${assetUrl(`/lovable-uploads/${basename}-${w}w.avif`)} ${w}w`).join(", ");
+              const webpSrcSet = widths.map((w) => `${assetUrl(`/lovable-uploads/${basename}-${w}w.webp`)} ${w}w`).join(", ");
+              return (
+                <picture>
+                  <source type="image/avif" srcSet={avifSrcSet} sizes={sizes} />
+                  <source type="image/webp" srcSet={webpSrcSet} sizes={sizes} />
+                  <img
+                    src={posterPath}
+                    alt={testimonial.company || "Company showcase"}
+                    className={cn(
+                      "absolute inset-0 w-full h-full object-cover",
+                      hasVideo ? (showVideo ? "opacity-0" : "opacity-100") : "opacity-100",
+                      "transition-opacity duration-300"
+                    )}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
+              );
+            }
+
+            return (
+              <img
+                src={posterPath}
+                alt={testimonial.company || "Company showcase"}
+                className={cn(
+                  "absolute inset-0 w-full h-full object-cover",
+                  hasVideo ? (showVideo ? "opacity-0" : "opacity-100") : "opacity-100",
+                  "transition-opacity duration-300"
+                )}
+                loading="lazy"
+                decoding="async"
+              />
+            );
+          })()}
 
           {/* Video layer - lazy-injected sources when in view */}
           {hasVideo && (
@@ -186,15 +224,15 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
               playsInline
               loop
               controls={false}
-              preload="metadata"
+              preload="none"
               autoPlay={showVideo}
-              poster={testimonial.poster || testimonial.image}
+              poster={assetUrl(testimonial.poster || testimonial.image)}
             >
               {isInView && testimonial.videoWebm && (
-                <source src={testimonial.videoWebm} type="video/webm" />
+                <source src={assetUrl(testimonial.videoWebm)} type="video/webm" />
               )}
               {isInView && testimonial.videoMp4 && (
-                <source src={testimonial.videoMp4} type="video/mp4" />
+                <source src={assetUrl(testimonial.videoMp4)} type="video/mp4" />
               )}
               {testimonial.captions && (
                 <track kind="captions" src={testimonial.captions} />
@@ -232,7 +270,7 @@ export function TrustedByTestimonials() {
       <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
         <div className="group flex overflow-hidden p-2 [--gap:1rem] [gap:var(--gap)] flex-row [--duration:800s]">
           <div className="flex shrink-0 justify-around [gap:var(--gap)] animate-marquee flex-row group-hover:[animation-play-state:paused]">
-            {[...Array(6)].map((_, setIndex) => (
+            {[...Array(3)].map((_, setIndex) => (
               testimonials.map((testimonial) => (
                 <TestimonialCard 
                   key={`${setIndex}-${testimonial.id}`}
@@ -242,7 +280,7 @@ export function TrustedByTestimonials() {
             ))}
           </div>
           <div className="flex shrink-0 justify-around [gap:var(--gap)] animate-marquee flex-row group-hover:[animation-play-state:paused]">
-            {[...Array(6)].map((_, setIndex) => (
+            {[...Array(3)].map((_, setIndex) => (
               testimonials.map((testimonial) => (
                 <TestimonialCard 
                   key={`duplicate-${setIndex}-${testimonial.id}`}

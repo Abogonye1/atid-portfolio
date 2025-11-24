@@ -13,7 +13,8 @@
     "test:run": "vitest run",
     "test:ui": "vitest --ui",
     "compress:fashion": "node scripts/compress-image.mjs",
-    "compress:uploads": "node scripts/compress-uploads.mjs"
+    "compress:uploads": "node scripts/compress-uploads.mjs",
+    "gen:images": "node scripts/generate-responsive-images.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
